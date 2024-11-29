@@ -1,4 +1,4 @@
-<template>
+  <template>
     <div class="filter-bar">
       <input v-model="searchQuery" type="text" placeholder="Search for a dish..." />
       <select v-model="selectedCategory">
@@ -8,22 +8,20 @@
         <option value="meat">Meat</option>
       </select>
     </div>
-    <RecipeGrid :recipes="filteredRecipes" />
   </template>
   
   <script>
-  import RecipeGrid from './RecipeGrid.vue';
-  
   export default {
-    components: { RecipeGrid },
+    props: {
+      recipes: {
+        type: Array,
+        required: true,
+      },
+    },
     data() {
       return {
         searchQuery: '',
         selectedCategory: '',
-        recipes: [
-          { id: 1, name: 'Ceviche', category: 'seafood' },
-          { id: 2, name: 'Lomo Saltado', category: 'meat' },
-        ],
       };
     },
     computed: {
@@ -34,6 +32,11 @@
             recipe.name.toLowerCase().includes(this.searchQuery.toLowerCase())
           );
         });
+      },
+    },
+    watch: {
+      filteredRecipes(newFilteredRecipes) {
+        this.$emit('filter', newFilteredRecipes); // Emit the filtered recipes back to parent
       },
     },
   };
